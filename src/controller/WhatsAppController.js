@@ -207,32 +207,150 @@ class WhatsAppController{
 
         //Evento, mostrar menu de anexo(foto, camera, documento, contato);
         this.el.btnAttach.on('click', e =>{
+            
+            if(this._flag == true){
 
-            e.stopPropagation();
-            this.el.menuAttach.addClass('open');
-            document.addEventListener('click', this.closeMenuAttach.bind(this));
+                this.el.menuAttach.removeClass('open');
+                this._flag = false;
+
+            }else{
+
+                e.stopPropagation();
+                this.el.menuAttach.addClass('open');
+                document.addEventListener('click', this.closeMenuAttach.bind(this));
+                this._flag = true;
+
+            }
 
         });
 
         //Evento, de pegar foto;
         this.el.btnAttachPhoto.on('click', e => {
-            console.log('photo');
+            this.el.inputPhoto.click();
+        });
+
+        //Evento, anexar foto;
+        this.el.inputPhoto.on('change', e =>{
+
+            console.log(this.el.inputPhoto.files);
+            [...this.el.inputPhoto.files].forEach(file => {
+
+                console.log(file);
+
+            });
+
         });
 
         //Evento, de abrir camera;
         this.el.btnAttachCamera.on('click', e => {
-            console.log('Camera');
+            this. closeAllMainPanel();
+            this.el.panelCamera.addClass('open');
+            this.el.panelCamera.css({
+                'height':'100%'
+            });
         });
 
-        //Evento, de pegar documento;
+        //Evento, fechar camera;
+        this.el.btnClosePanelCamera.on('click', e =>{
+
+            this.el.panelCamera.removeClass('open');
+            this.el.panelMessagesContainer.show();
+
+        });
+
+        //Evento, de tirar photo;
+        this.el.btnTakePicture.on('click', e=>{
+
+            console.log('take picture!');
+
+        });
+
+        //Evento, abrir tela de anexar documento;
         this.el.btnAttachDocument.on('click', e => {
-            console.log('Documento');
+            this. closeAllMainPanel();
+            this.el.panelDocumentPreview.addClass('open');
+            this.el.panelDocumentPreview.css({
+                'height':'100%'
+            });
         });
 
-        //Evento, de pegar contato ;
-        this.el.btnAttachContact.on('click', e => {
-            console.log('Contato');
+        //Evento, enviar documento;
+        this.el.btnSendDocument.on('click', e=>{
+
+            console.log('send document');
+
         });
+
+        //Evento, fechar painel documento;
+        this.el.btnClosePanelDocumentPreview.on('click', e => {
+
+            this.closeAllMainPanel();
+            this.el.panelMessagesContainer.show();
+
+        });
+
+        //Evento, para abrir tela de contatos;
+        this.el.btnAttachContact.on('click', e => {
+            this.el.modalContacts.show();
+        });
+
+        //Evento, Fechar tela de contatos;
+        this.el.btnCloseModalContacts.on('click', e =>{
+
+            this.el.modalContacts.hide();
+
+        });
+
+        //Evento, exibir painel de gravação;
+        this.el.btnSendMicrophone.on('click', e=>{
+
+            this.el.recordMicrophone.show();
+            this.el.btnSendMicrophone.hide();
+            this.startRecordMicrophoneTime();
+
+        });
+
+        //Evento, cancelar gravação do audio;
+        this.el.btnCancelMicrophone.on('click', e =>{
+
+            this.closeRecordMicrophone();
+
+        });
+
+        //Evento, finalizar gravação do audio;
+        this.el.btnFinishMicrophone.on('click', e =>{
+
+            this.closeRecordMicrophone();
+
+        });
+
+
+    }
+
+    //Metodo, mostrar o tempo de gravação do audio;
+    startRecordMicrophoneTime(){
+
+        let start = Date.now();
+        this._recordMicrophoneInterval = setInterval(() => {
+
+            this.el.recordMicrophoneTimer.innerHTML = (Date.now() - start);
+
+        }, 100);
+
+    }
+
+    //Metodo, ocultar elementos de gravação de audio, e exibir botão de gravar audio;
+    closeRecordMicrophone(){
+        this.el.recordMicrophone.hide();
+        this.el.btnSendMicrophone.show();
+        clearInterval(this._recordMicrophoneInterval);
+    }
+
+    //Metodo, fechar paineis, e deixar somente das mensagens;
+    closeAllMainPanel(){
+        this.el.panelMessagesContainer.hide();
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelCamera.removeClass('open');
 
     }
 
