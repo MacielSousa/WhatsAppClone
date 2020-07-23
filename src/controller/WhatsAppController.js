@@ -238,6 +238,10 @@ class WhatsAppController{
             this.el.panelCamera.css({
                 'height':'100%'
             });
+
+            //Criando um objeto camera, passando elemento video como parametro;
+            this._camera = new CameraController(this.el.videoCamera);
+
         });
 
         //Evento, fechar camera;
@@ -362,9 +366,9 @@ class WhatsAppController{
         //Evento, seleciona o emojis e apresenta no campo de texto;
         this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji =>{
 
+            //Evento, selecionar o emoji para aprecer no inputText;
             emoji.on('click', e =>{
                 
-                console.log(emoji.dataset.unicode);
                 let img = this.el.imgEmojiDefault.cloneNode();
                 img.style.cssText = emoji.style.cssText;
                 img.dataset.unicode = emoji.dataset.unicode;
@@ -375,7 +379,7 @@ class WhatsAppController{
                 });
 
                 let cursor = window.getSelection();
-                
+                //Verifica se o cursor não tem valor null, e aponta o cursor para o inputText
                 if(!cursor.focusNode || cursor.focusNode.id == 'input-text'){
                     this.el.inputText.focus();
                     cursor = window.getSelection();
@@ -400,6 +404,8 @@ class WhatsAppController{
             });
 
         });
+
+
 
 
     }
