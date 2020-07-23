@@ -1,4 +1,4 @@
-class Format{
+export class Format{
 
     //Metodo que retorna o atributo apontadno para cada id;
     static getCamelCase(text){

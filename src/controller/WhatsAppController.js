@@ -1,5 +1,8 @@
+import {Format} from './../util/Format';
+import {CameraController} from './CameraController';
+
 //Classe padrão do Projeto, invocada pelo o meu app;
-class WhatsAppController{
+export  class WhatsAppController{
 
     //Metodo construtor padrão;
     constructor(){
