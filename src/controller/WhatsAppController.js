@@ -208,19 +208,9 @@ class WhatsAppController{
         //Evento, mostrar menu de anexo(foto, camera, documento, contato);
         this.el.btnAttach.on('click', e =>{
             
-            if(this._flag == true){
-
-                this.el.menuAttach.removeClass('open');
-                this._flag = false;
-
-            }else{
-
                 e.stopPropagation();
-                this.el.menuAttach.addClass('open');
+                this.el.menuAttach.toggleClass('open');
                 document.addEventListener('click', this.closeMenuAttach.bind(this));
-                this._flag = true;
-
-            }
 
         });
 
@@ -324,6 +314,59 @@ class WhatsAppController{
 
         });
 
+        //Evento, enviar mensagem quando dá um enter;
+        this.el.inputText.on('keypress', e=>{
+
+            if(e.key === 'Enter' && !e.ctrlKey){
+                e.preventDefault();
+                this.el.btnSend.click();
+            }
+
+        });
+
+        //Evento, configurando campo de texto;
+        this.el.inputText.on('keyup', e =>{
+
+            //Oculta frase padrão do PlaceHolder e Botão de gravar audio, e apresenta botaão de enviar texto;
+            if(this.el.inputText.innerHTML.length){
+
+                this.el.inputPlaceholder.hide();
+                this.el.btnSendMicrophone.hide();
+                this.el.btnSend.show();
+
+            }//Oculta botão de enviar texto, e mostra Botão de audio e apresenta mensagem padrão do PlaceHolder;
+            else{
+
+                this.el.inputPlaceholder.show();
+                this.el.btnSendMicrophone.show();
+                this.el.btnSend.hide();
+
+            }
+
+        });
+
+        //Evento, eviar mensagem de texto;
+        this.el.btnSend.on('click', e => {
+
+            console.log(this.el.inputText.innerHTML);
+
+        });
+
+        //Evento, botão que apresenta tela de emojis;
+        this.el.btnEmojis.on('click', e =>{
+
+            this.el.panelEmojis.toggleClass('open');
+
+        });
+
+        //Evento, seleciona o emojis e apresenta no campo de texto;
+        this.el.panelEmojis.querySelectorAll('.emojik').forEach(emoji =>{
+
+            emoji.on('click', e =>{
+                console.log(emoji.dataset.unicode);
+            });
+
+        });
 
     }
 
