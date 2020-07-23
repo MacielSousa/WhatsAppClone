@@ -11,17 +11,26 @@ export class CameraController {
             video: true
         }).then(stream => {
 
-            //Cria uma Objeto imagem;
+            //Criando variavel stream;
+            this._stream = stream;
+
+            //Cria um Objeto imagem;
             let mediaStream = new MediaStream(stream);
             //variavel videoEl recebe objeto imagem;
             this._videoEl.srcObject = mediaStream;
-            //imagem aparecer no elemento videoCamera
+            //imagem aparece no elemento videoCamera;
             this._videoEl.play();
 
         }).catch( err => {
             console.error(err);
         });
 
+    }
+    //Metodo, para fechar camera;
+    stop(){
+        this._stream.getTracks().forEach(track => {
+            track.stop();
+        });
     }
 
 }
