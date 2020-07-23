@@ -259,7 +259,44 @@ export  class WhatsAppController{
         //Evento, de tirar photo;
         this.el.btnTakePicture.on('click', e=>{
 
-            console.log('take picture!');
+            //Recebendo imagem;
+            let dataURL = this._camera.takePicture();
+
+            //Elemento pictureCamera recebedo imagem;
+            this.el.pictureCamera.src = dataURL;
+            //Exibindo picture camera;
+            this.el.pictureCamera.show();
+            //Escondendo elemento videoCamera;
+            this.el.videoCamera.hide();
+            //Apresentar botão de tirar foto novamente;
+            this.el.btnReshootPanelCamera.show();
+            //Ocultar Botão de tirar foto;
+            this.el.containerTakePicture.hide();
+            //Mostrar Botão de enviar foto;
+            this.el.containerSendPicture.show();
+
+        });
+
+        //Evento, para tirar uma nova foto;
+        this.el.btnReshootPanelCamera.on('click', e => {
+
+            //Ocultar pictureCamera;
+            this.el.pictureCamera.hide();
+            //Exibindo elemento videoCamera;
+            this.el.videoCamera.show();
+            //Ocultar botão de tirar foto novamente;
+            this.el.btnReshootPanelCamera.hide();
+            //Exibir Botão de tirar foto;
+            this.el.containerTakePicture.show();
+            //Ocultar Botão de enviar foto;
+            this.el.containerSendPicture.hide();
+
+        });
+
+        //Evento, para enviar foto;
+        this.el.btnSendPicture.on('click', e =>{
+
+            console.log(this.el.pictureCamera.src);
 
         });
 
