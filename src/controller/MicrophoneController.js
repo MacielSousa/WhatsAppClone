@@ -1,8 +1,11 @@
-export class MicrophoneController{
+import { ClassEvent } from "../util/ClassEvant";
+
+export class MicrophoneController extends ClassEvent{
 
     //Metodo construtot
     constructor(){
 
+        super();
 
         //Promise, mandar audio;
         navigator.mediaDevices.getUserMedia({
