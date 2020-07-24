@@ -14,19 +14,18 @@ export class ClassEvent{
 
     }
     trigger(){
-
         let args = [...arguments];
-        let eventName = args.shift();
-        args.push(new Event(eventName));
+        let eventNam = args.shift();
 
-        if(this._events[eventName] instanceof Array){
+        args.push(new Event(eventNam));
 
-            this._events[eventName].forEach(fn => {
+        if(this._events[eventNam] instanceof Array){
+
+            this._events[eventNam].forEach(fn  =>{
 
                 fn.apply(null, args);
 
             });
-
         }
 
     }
