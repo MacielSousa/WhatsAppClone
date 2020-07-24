@@ -1,5 +1,7 @@
 import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
+import { DocumentPreviewController } from './DocumentPreviewController';
+
 
 //Classe padrão do Projeto, invocada pelo o meu app;
 export  class WhatsAppController{
@@ -307,6 +309,68 @@ export  class WhatsAppController{
             this.el.panelDocumentPreview.css({
                 'height':'100%'
             });
+            this.el.inputDocument.click();
+        });
+
+        //Evento, exibir tela de enviar documento;
+        this.el.inputDocument.on('change', e => {
+
+            //Verificando se meu elemento está vazio;
+            if(this.el.inputDocument.files.length){
+
+                //Passando o primeiro documento que foi selecionado para a variavel file
+                let file = this.el.inputDocument.files[0];
+
+                //Metodo que recebe uma previa do documento que foi selecionado;
+                this._documentPreviewController = new DocumentPreviewController(file);
+
+                //Promessa, para receber. a imagem de previsualização do documento;
+                this._documentPreviewController.getPreviewData().then(result => {
+                    //Passando imagem para o elemento;
+                    this.el.imgPanelDocumentPreview.src = result.src;
+                    //Passando informação da imagem para o elemento;
+                    this.el.infoPanelDocumentPreview.innerHTML = result.info;
+                    //Exibir Painel de Imagem;
+                    this.el.imagePanelDocumentPreview.show();
+                    //Ocultado painel de exibir previa do documento;
+                    this.el.filePanelDocumentPreview.hide();
+                }).catch(err =>{
+                    console.log(file.type);
+
+                    switch(file.type){
+                        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+                        case 'application/vnd.ms-excel':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-xls';
+
+                        break;
+
+                        case 'application/vnd.ms-powerpoint':
+                        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-ppt';
+
+                        break;
+                        case 'application/vnd.msword':
+                        case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-doc';
+    
+                        break;
+
+                        
+                        default:
+                            this.el.iconPanelDocumentPreview.className = 'jcxhw icon-doc-generic';
+                        break;
+
+                    }
+                    //Passando o nome do documento para o elemento;
+                    this.el.filenamePanelDocumentPreview.innerHTML = file.name;
+                    //Esconder Painel de Imagem;
+                    this.el.imagePanelDocumentPreview.hide();
+                    // exibir painel previa do documento;
+                    this.el.filePanelDocumentPreview.show();
+                });
+
+            }
+
         });
 
         //Evento, enviar documento;
