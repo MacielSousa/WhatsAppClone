@@ -374,7 +374,7 @@ export  class WhatsAppController{
         });
 
         //Evento, enviar documento;
-        this.el.btnSendDocument.on('click', e=>{
+        this.el.btnSendDocument.on('click', e => {
 
             console.log('send document');
 
