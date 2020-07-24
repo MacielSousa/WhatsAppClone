@@ -2,6 +2,7 @@ import {Format} from './../util/Format';
 import {CameraController} from './CameraController';
 import {MicrophoneController} from './MicrophoneController';
 import { DocumentPreviewController } from './DocumentPreviewController';
+import {Firebase} from './../util/Firebase';
 
 
 //Classe padrão do Projeto, invocada pelo o meu app;
@@ -19,6 +20,8 @@ export  class WhatsAppController{
         this.loadElements();
         //Metodo que inicia todos os eventos;
         this.initEvents();
+        //Criando objeto firebase;
+        this._firebase = new Firebase();
 
     }
 
