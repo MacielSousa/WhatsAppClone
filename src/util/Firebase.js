@@ -26,14 +26,14 @@ export class Firebase {
     init(){
 
         //Verifica se o firebase não está inicializado;
-        if(!this._initialized){
+        if(!window._initializedFirebase){
             //Inicia uma conexão com o firebase;
             firebase.initializeApp(this._config);
 
             firebase.firestore().settings({});
 
             //Flag de Verificação se o firebase foi inicializado ou não;
-            this._initialized = true;
+            window._initializedFirebase = true;
         }
 
     }
