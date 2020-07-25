@@ -11,8 +11,10 @@ export  class WhatsAppController{
     //Metodo construtor padrão;
     constructor(){
 
-        //Mensagem de KO, minha classe está correta;
-        console.log("WhatsAppController OK!");
+        //Criando objeto firebase;
+        this._firebase = new Firebase();
+        //Meetodo auteticanção;
+        this.initAuth();
 
         //Metodo para amarrar o escopo da pagina;
         this.elementProtorype();
@@ -20,8 +22,22 @@ export  class WhatsAppController{
         this.loadElements();
         //Metodo que inicia todos os eventos;
         this.initEvents();
-        //Criando objeto firebase;
-        this._firebase = new Firebase();
+        
+    }
+
+    //Metodo de autenticção
+    initAuth(){
+
+        this._firebase.initAuth()
+            .then(response=> {
+                this._user = response.user;
+                this.el.appContent.css({
+                    display:'flex'
+                });
+            })
+            .catch(err =>{
+                console.log(err)
+            });
 
     }
 
