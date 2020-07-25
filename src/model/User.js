@@ -53,11 +53,36 @@ export class User extends Model{
 
     addContact(contact){
 
-       return User.getRef()
+     return User.getRef()
         .doc(this.email)
         .collection('contacts')
         .doc(btoa(contact.email))
         .set(contact.toJSON());
+
+    }
+
+    getContacts(){
+
+        
+        return new Promise((s, f) => {
+
+            User.getRef().doc(this.email).collection('contacts').onSnapshot(docs => {
+
+                let contacts = [];
+
+                docs.forEach(doc => {
+                    let data = doc.data();
+                    data.id = doc.id;
+                    contacts.push(data);
+
+                });
+
+                this.trigger('contactschange', docs);
+                s(contacts);
+
+            });
+
+        });
 
     }
 
