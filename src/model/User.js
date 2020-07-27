@@ -64,12 +64,12 @@ export class User extends Model{
 
     }
 
-    getContacts(){
+    getContacts(filter = ''){
 
         
         return new Promise((s, f) => {
 
-            User.getRef().doc(this.email).collection('contacts').onSnapshot(docs => {
+            User.getRef().doc(this.email).collection('contacts').where('name', '>=', filter).onSnapshot(docs => {
 
                 let contacts = [];
 
