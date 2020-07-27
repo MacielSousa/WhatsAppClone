@@ -1,4 +1,5 @@
 import { Model } from "./Model";
+import { Chat } from "./Chats";
 
 export class Message extends Model{
 
@@ -287,5 +288,4 @@ export class Message extends Model{
         return div;
 
     }
-
 }

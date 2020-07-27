@@ -4,6 +4,7 @@ import {MicrophoneController} from './MicrophoneController';
 import { DocumentPreviewController } from './DocumentPreviewController';
 import {Firebase} from './../util/Firebase';
 import { User } from '../model/User';
+import { Chat } from '../model/Chats';
 
 
 //Classe padrão do Projeto, invocada pelo o meu app;
@@ -147,6 +148,7 @@ export  class WhatsAppController{
 
                 div.on('click', e => {
 
+                    console.log('ChatId',contact.chatId);
                     this.el.activeName.innerHTML = contact.name;
                     this.el.activeStatus.innerHTML = contact.status;
                     if(contact.photo){
@@ -356,9 +358,17 @@ export  class WhatsAppController{
 
                 if(data.name){
 
-                    this._user.addContact(contact).then(()=> {
-                        this.el.btnClosePanelAddContact.click();
-                        console.info('Contato foi adicionado!');
+                    Chat.createIfNotExists().then(chat => {
+
+                        contact.chatId = chat.id;
+                        this._user.chatId = chat.id;
+                        contact.addContact(this._user);
+
+                        this._user.addContact(contact).then(()=> {
+                            this.el.btnClosePanelAddContact.click();
+                            console.info('Contato foi adicionado!');
+                        });
+
                     });
 
                 }else {
