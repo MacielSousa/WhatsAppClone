@@ -5,6 +5,7 @@ import { DocumentPreviewController } from './DocumentPreviewController';
 import {Firebase} from './../util/Firebase';
 import { User } from '../model/User';
 import { Chat } from '../model/Chats';
+import { Message } from '../model/Message';
 
 
 //Classe padrão do Projeto, invocada pelo o meu app;
@@ -147,21 +148,7 @@ export  class WhatsAppController{
                 }
 
                 div.on('click', e => {
-
-                    console.log('ChatId',contact.chatId);
-                    this.el.activeName.innerHTML = contact.name;
-                    this.el.activeStatus.innerHTML = contact.status;
-                    if(contact.photo){
-
-                        let img = this.el.activePhoto;
-                        img.src = contact.photo;
-                        img.show();
-
-                    }
-
-                    this.el.main.css({
-                        display: 'flex'
-                    });
+                    this.setActiveChat(contact);
                 });
 
                 this.el.contactsMessagesList.appendChild(div);
@@ -170,6 +157,27 @@ export  class WhatsAppController{
 
         });
         this._user.getContacts();
+    }
+
+    setActiveChat(contact){
+
+        this._contactAtive = contact;
+
+        this.el.activeName.innerHTML = contact.name;
+        this.el.activeStatus.innerHTML = contact.status;
+        if(contact.photo){
+
+            let img = this.el.activePhoto;
+            img.src = contact.photo;
+            img.show();
+
+        }
+
+        this.el.main.css({
+            display: 'flex'
+        });
+
+
     }
 
     //Metodo que cria o objeto el, para manipulação o Dom;
@@ -654,7 +662,10 @@ export  class WhatsAppController{
         //Evento, eviar mensagem de texto;
         this.el.btnSend.on('click', e => {
 
-            console.log(this.el.inputText.innerHTML);
+            Message.send(this._contactAtive.chatId, this._user.email, 'text', this.el.inputText.innerHTML);
+
+            this.el.inputText.innerHTML = '';
+            this.el.panelEmojis.removeClass('open');
 
         });
 
