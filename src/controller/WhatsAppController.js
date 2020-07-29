@@ -197,6 +197,7 @@ export  class WhatsAppController{
                 let message = new Message();
                 message.fromJSON(data);
                 let me = (data.from === this._user.email);
+                let view = message.getViewElement(me);
 
                 if(!this.el.panelMessagesContainer.querySelector('#_'+data.id)){
 
@@ -207,17 +208,15 @@ export  class WhatsAppController{
                             merge: true
                         });
                     }
-                                    
-                    let view = message.getViewElement(me);
-                    
+                      
                     this.el.panelMessagesContainer.appendChild(view);
 
                 }else {
 
-                   let view = message.getViewElement(me);
+                   let parent =  this.el.panelMessagesContainer.querySelector('#_'+data.id).parentNode;
 
-                   this.el.panelMessagesContainer.querySelector('#_'+data.id).innerHTML = view.innerHTML;
-                   
+                   parent.replaceChild(view, this.el.panelMessagesContainer.querySelector('#_'+data.id));
+
 
                 }
                 
@@ -227,6 +226,29 @@ export  class WhatsAppController{
                    let msgEl = this.el.panelMessagesContainer.querySelector('#_'+data.id);
 
                    msgEl.querySelector('.message-status').innerHTML = message.getStatusViewElemnets().outerHTML;
+
+                }
+
+                if(message.type === 'contact'){
+
+                   view.querySelector('.btn-message-send').on('click', e => {
+
+                        Chat.createIfNotExists(this._user.email, message.content.email).then(chat => {
+
+                            let contact = new User(message.content.email);
+                                contact.on('datachange', data => {
+
+                                contact.chatId = chat.id;
+                                this._user.addContact(contact);
+                                this._user.chatId = chat.id;
+                                contact.addContact(this._user);
+
+                                this.setActiveChat(contact);
+                            });
+
+                        });
+
+                   });
 
                 }
 
@@ -765,6 +787,17 @@ export  class WhatsAppController{
         //Evento, finalizar gravação do audio;
         this.el.btnFinishMicrophone.on('click', e =>{
 
+            this._microphoneController.on('recorded', (file, metadata) => {
+
+                Message.sendAudio(
+                    this._contactAtive.chatId,
+                    this._user.email,
+                    file,
+                    metadata,
+                    this._user.photo
+                )
+
+            });
             this._microphoneController.stopRecorder();
             this.closeRecordMicrophone();
 
