@@ -2,6 +2,7 @@ import { Model } from "./Model";
 import { Firebase } from "../util/Firebase";
 import { Format } from "../util/Format";
 import { Base64 } from "../util/base64";
+import { Upload } from "../util/Upload";
 
 
 export class Message extends Model{
@@ -396,25 +397,7 @@ export class Message extends Model{
 
     static upload(file, from){
 
-        return new Promise ((s, f)=>{
-
-            let uploadTask = Firebase.hd().ref(from).child(Date.now()  + '_' + file.name).put(file);
-
-            uploadTask.on('state_changed', e => {
-                console.info('Upload', e);
-            }, err => {
-                f(err);
-            }, () => {
-                
-                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-
-                    s(downloadURL);
-                    
-                });
-
-            });
-
-        });
+        return Upload.send(file, from);
 
     }
 
