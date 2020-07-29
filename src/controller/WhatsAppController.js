@@ -7,6 +7,7 @@ import { User } from '../model/User';
 import { Chat } from '../model/Chats';
 import { Message } from '../model/Message';
 import { Base64 } from '../util/base64';
+import { ContactsController } from './ContactsController';
 
 
 //Classe padrão do Projeto, invocada pelo o meu app;
@@ -706,13 +707,28 @@ export  class WhatsAppController{
 
         //Evento, para abrir tela de contatos;
         this.el.btnAttachContact.on('click', e => {
-            this.el.modalContacts.show();
+
+            this._contactsController = new ContactsController(this.el.modalContacts, this._user);
+
+            this._contactsController.on('select', contact => {
+
+                Message.sendContact(
+                    this._contactAtive.chatId,
+                    this._user.email,
+                    contact
+                );
+
+            });
+
+            this._contactsController.open();
+           
         });
 
         //Evento, Fechar tela de contatos;
         this.el.btnCloseModalContacts.on('click', e =>{
 
-            this.el.modalContacts.hide();
+            this._contactsController.close();
+           
 
         });
 
