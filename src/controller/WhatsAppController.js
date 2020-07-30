@@ -17,6 +17,7 @@ export  class WhatsAppController{
     //Metodo construtor padrão;
     constructor(){
 
+        this._active = true;
         //Criando objeto firebase;
         this._firebase = new Firebase();
         //Meetodo auteticanção;
@@ -28,7 +29,61 @@ export  class WhatsAppController{
         this.loadElements();
         //Metodo que inicia todos os eventos;
         this.initEvents();
+        this.checkNotifications();
+
         
+    }
+
+
+    checkNotifications(){
+        if(typeof Notification === 'function'){
+
+            if(Notification.permission !== 'granted'){
+
+                this.el.alertNotificationPermission.show();
+
+            }else{
+
+                this.el.alertNotificationPermission.hide();
+
+            }
+
+            this.el.alertNotificationPermission.on('click', e => {
+
+                Notification.requestPermission(permission => {
+
+                    if(permission ===  'granted'){
+
+                        this.el.alertNotificationPermission.hide();
+                        console.info('notificações permitidas!');
+
+                    }
+
+                });
+
+            })
+
+        }
+    }
+
+    notification(data){
+
+        if(Notification.permission === 'granted' && !this._active){
+
+            let n = new Notification(this._contactAtive.name, {
+                icon: this._contactAtive.photo,
+                body: data.content
+            });
+            let sound = new Audio('./audio/alert.mp3');
+            sound.currentTime = 0;
+            sound.play();
+
+            setTimeout(()=> {
+                if(n) n.close();
+            }, 3000);
+
+        }
+
     }
 
     //Metodo de autenticção
@@ -185,6 +240,7 @@ export  class WhatsAppController{
 
         this.el.panelMessagesContainer.innerHTML = '';
 
+        this._messagesRceived = [];
         Message.getRef(this._contactAtive.chatId).orderBy('tipeStamp').onSnapshot(docs => {
 
             let scrollTop = this.el.panelMessagesContainer.scrollTop;
@@ -197,7 +253,15 @@ export  class WhatsAppController{
                 data.id = doc.id;
                 let message = new Message();
                 message.fromJSON(data);
+
                 let me = (data.from === this._user.email);
+
+                if(!me && this._messagesRceived.filter(id => { return (id === data.id)}).length === 0){
+
+                    this.notification(data);
+                    this._messagesRceived.push(data.id);
+
+                }
                 let view = message.getViewElement(me);
 
                 if(!this.el.panelMessagesContainer.querySelector('#_'+data.id)){
@@ -376,6 +440,17 @@ export  class WhatsAppController{
     //Metodo, que inicia todos os evetos;
     initEvents(){
 
+        window.addEventListener('focus', e => {
+
+            this._active = true;
+
+        });
+
+        window.addEventListener('blur', e => {
+
+            this._active = false;
+
+        });
 
         this.el.inputSearchContacts.on('keyup', e => {
             if(this.el.inputSearchContacts.value.length > 0){
@@ -492,7 +567,7 @@ export  class WhatsAppController{
 
                 if(data.name){
 
-                    Chat.createIfNotExists().then(chat => {
+                    Chat.createIfNotExists(this._user.email, contact.email).then(chat => {
 
                         contact.chatId = chat.id;
                         this._user.chatId = chat.id;

@@ -1,6 +1,5 @@
 const functions = require('firebase-functions');
 let admin = require('firebase-admin');
-const { Change } = require('firebase-functions');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -84,7 +83,7 @@ let decode64 = function (input) {
     return unescape(output);
 }
 
-exports.seveLastMessage = functions.firestore.document('/chats/{chatId}/messages/{messageId}').onCreate((change, context)=>{
+exports.saveLastMessage = functions.firestore.document('/chats/{chatId}/messages/{messageId}').onCreate((change, context)=>{
 
   let chatId = context.params.chatId;
   let messageId = context.params.messageId;
